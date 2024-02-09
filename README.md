@@ -6,10 +6,11 @@ The Second Hand Market App is a platform designed to facilitate the buying, sell
 
 Features
 
-    User Registration and Authentication: Secure sign-up and login functionality for users.
+    User Login and Registration: Secure sign-up and login functionality for users.
     Product Listings: Users can list items for sale, including descriptions, conditions, prices, and photos.
     Search and Filters: Advanced search options to find items by category, price, location, and more.
-    Messaging System: In-app messaging to facilitate communication between buyers and sellers.
+    Item Cards/Feed/Category: Our app showcases second-hand items using a visually appealing and information-rich card layout. 
+    Wishlist/Favorites: Wishlist/Favorites feature enables users to curate a personalized collection of items they love or wish to purchase in the future. 
     Ratings and Reviews: Users can rate and review transactions to build trust and reliability within the community.
 
 Getting Started
