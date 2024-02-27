@@ -1,0 +1,6 @@
+logging:
+  level:
+    org.apache.coyote.http11.Http11InputBuffer: DEBUG # Incoming HTTP Requests
+spring:
+  jackson:
+    default-property-inclusion: non-null # if the field is null, do not show
