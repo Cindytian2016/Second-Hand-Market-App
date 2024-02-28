@@ -1,0 +1,33 @@
+.App {
+  text-align: center;
+  background-color: white; /* Or 'pink' */
+  padding: 20px;
+}
+
+.App-header {
+  background-color: blueviolet;
+  padding: 20px;
+  color: pink;
+}
+
+.App-content {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.App-footer {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #282c34;
+  color: white;
+}
+
+.itemsFeed {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Add additional styling as needed */
