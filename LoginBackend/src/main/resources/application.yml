@@ -1,0 +1,29 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB # File upload limit, default 1MB not enough.
+  jackson:
+    default-property-inclusion: non_null
+  datasource:
+    url: jdbc:postgresql://${DATABASE_URL:localhost}:${DATABASE_PORT:5433}/postgres
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:secret}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # Change this from 'create-drop' to 'validate' by Chatgpt, so that after pasting tables, when running the Entity classes, the table won't be dropped and new table created
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
+    show-sql: true
+  sql:
+    init:
+      mode: always
+      schema-locations: "classpath:postgis_extension.sql"
+
+secondhandmarket:
+  gcs:
+    bucket: secondhandmarkethao-bucket
+  jwt:
+    secret-key: hYW3L6I3gPpEUbtU+17FEHRYJuc8uLYHaLLsuzzyKn4=

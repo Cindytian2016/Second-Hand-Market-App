@@ -1,0 +1,54 @@
+package com.laioffer.secondhandmarket.authentication;
+
+
+import com.laioffer.secondhandmarket.model.UserEntity;
+import com.laioffer.secondhandmarket.model.UserRole;
+import com.laioffer.secondhandmarket.repository.UserRepository;
+import com.laioffer.secondhandmarket.security.JwtHandler;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+
+@Service
+public class AuthenticationService {
+
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtHandler jwtHandler;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+
+
+    public AuthenticationService(
+            AuthenticationManager authenticationManager,
+            JwtHandler jwtHandler,
+            PasswordEncoder passwordEncoder,
+            UserRepository userRepository
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.jwtHandler = jwtHandler;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+    }
+
+
+    public UserEntity register(String username, String password, UserRole role) throws UserAlreadyExistException {
+        if (userRepository.existsByUsername(username)) {
+            throw new UserAlreadyExistException();
+        }
+
+
+        UserEntity userEntity = new UserEntity(null, username, passwordEncoder.encode(password), role);
+        return userRepository.save(userEntity);
+    }
+
+
+    public String login(String username, String password) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        return jwtHandler.generateToken(username);
+    }
+}
+
+// login 后token需要return给前端
