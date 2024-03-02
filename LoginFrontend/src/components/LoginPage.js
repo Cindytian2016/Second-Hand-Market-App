@@ -56,7 +56,7 @@ class LoginPage extends React.Component {
     try {
       await register({
         ...formInstance.getFieldsValue(true),
-        role: this.state.asSeller ? "ROLE_SELLER" : "ROLE_BUYER",
+        role: this.state.asSeller ? "ROLE_SELLER" : "ROLE_BUYER",       // !!! might need to change this line depending on this project's role name
       });
       message.success("Register Successfully");
     } catch (error) {
