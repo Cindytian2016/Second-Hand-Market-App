@@ -55,7 +55,7 @@ Contributions are what make the open-source community such an amazing place to l
 
 Please refer to the CONTRIBUTING.md file for detailed contribution guidelines.
 
-Contact: Flag Team 2
+Contact: Test
 
 Project Link: https://github.com/Cindytian2016/second-hand-market-app
 
