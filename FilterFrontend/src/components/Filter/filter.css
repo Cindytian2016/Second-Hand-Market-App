@@ -1,0 +1,29 @@
+.filterForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filterForm select,
+.filterForm input,
+.filterForm button {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.filterForm button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.filterForm button:hover {
+  background-color: #0056b3;
+}
+
+.priceRange {
+  display: flex;
+  gap: 10px;
+}
