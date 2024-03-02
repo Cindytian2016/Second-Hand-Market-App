@@ -1,85 +1,129 @@
-import { Layout, Dropdown, Menu, Button } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import React from "react";
-import LoginPage from "./components/LoginPage";
+import { Layout, Row, Col, Card, Button, Menu } from 'antd';
+import React from 'react';
+import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
 
-class App extends React.Component {
-  state = {
-    authed: false,
-    asSeller: false,
-  };
+function App() {
 
-  componentDidMount() {
-    const authToken = localStorage.getItem("authToken");
-    const asSeller = localStorage.getItem("asSeller") === "true";
-    this.setState({
-      authed: authToken !== null,
-      asSeller,
-    });
-  }
+  // initial data for testing
+  const [items, setItems] = React.useState([]);
+  const [favoriteItems, setFavoriteItems] = React.useState([]);
+  const [menuKey, setMenuKey] = React.useState('1');
 
-  handleLoginSuccess = (token, asSeller) => {
-    localStorage.setItem("authToken", token);
-    localStorage.setItem("asSeller", asSeller);
-    this.setState({
-      authed: true,
-      asSeller,
-    });
-  };
+  React.useEffect(() => {
+    // fetch to get the data
+    fetch('http://localhost:8080/api/items')
+      .then(response => response.json())
+      .then(data => {
+        setItems(data);
+      });
+    fetch('http://localhost:8080/api/favorite/1')
+      .then(response => response.json())
+      .then(data => {
+        setFavoriteItems(data);
+      });
+  }, []);
 
-  handleLogOut = () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("asSeller");
-    this.setState({
-      authed: false,
-    });
-  };
+  const data = React.useMemo(() => {
 
-  renderContent = () => {
-    if (!this.state.authed) {
-      return <LoginPage handleLoginSuccess={this.handleLoginSuccess} />;
+    if (menuKey === '1') {
+      return items.map(item => {
+        const favorite = favoriteItems.find(favoriteItem => favoriteItem.item.id === item.id);
+        return {
+          ...item,
+          favorite: !!favorite
+        }
+      });
+    } else {
+      return items.filter(item => {
+        const favorite = favoriteItems.find(favoriteItem => favoriteItem.item.id === item.id);
+        return !!favorite;
+      }).map(item => {
+        const favorite = favoriteItems.find(favoriteItem => favoriteItem.item.id === item.id);
+        return {
+          ...item,
+          favorite: !!favorite
+        }
+      });
     }
+  }, [menuKey, items, favoriteItems]);
 
-    if (this.state.asSeller) {
-      return <div>seller home page</div>;
+  const toggleFavorite = (index) => () => {
+    const newData = [...data];
+    newData[index].favorite = !newData[index].favorite;
+    const newFavoriteItems = [...favoriteItems];
+    if (newData[index].favorite && newData[index].id) {
+      newFavoriteItems.push({ userId: 1, item: { id: newData[index].id } });
+    } else {
+      const favoriteIndex = newFavoriteItems.findIndex(favoriteItem => favoriteItem.item.id === newData[index].id);
+      newFavoriteItems.splice(favoriteIndex, 1);
     }
-
-    return <div>buyer home page</div>;
+    setFavoriteItems(newFavoriteItems);
+    if (newData[index].favorite) {
+      // fetch to update the favorite status
+      fetch(`http://localhost:8080/api/favorite?userId=1&itemId=${newData[index].id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } else {
+      fetch(`http://localhost:8080/api/favorite/1/${newData[index].id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
   };
 
-  userMenu = (
-    <Menu>
-      <Menu.Item key="logout" onClick={this.handleLogOut}>
-        Log Out
-      </Menu.Item>
-    </Menu>
+  return (
+    <Layout>
+      <Header style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ color: 'white', marginRight: '20px' }}>Markets</div>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['1']}
+          items={[{ key: 1, label: 'Home' }, { key: 2, label: 'Favorites' }]}
+          style={{ flex: 1, minWidth: 0 }}
+          onSelect={(item) => {
+            setMenuKey(item.key);
+          }}
+        />
+      </Header>
+      <Content style={{ height: 'calc(100vh - 64px)', padding: 24, overflow: 'auto', display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+        {
+          Array.isArray(data) && data.length > 0
+            ? new Array(data.length).fill(0).map((_, index) => (
+              <Card key={index} style={{ width: 350, margin: 24 }}
+                title={data[index].name}
+                cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
+                extra={<Button type="text" onClick={toggleFavorite(index)}>
+                  {
+                    data[index].favorite ? <HeartFilled style={{ color: 'red' }}/> : <HeartOutlined />
+                  }
+                  
+                </Button>}
+              >
+                <Row>
+                  <Col span={24}>
+                    <p>{data[index].description}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={24}>
+                    <p>Price: ${data[index].price}</p>
+                  </Col>
+                </Row>
+              </Card>
+            ))
+            : <div>No data</div>
+        }
+      </Content>
+    </Layout>
   );
-
-  render() {
-    return (
-      <Layout style={{ height: "100vh" }}>
-        <Header style={{ display: "flex", justifyContent: "space-between" }}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: "white" }}>
-            Second Hand Market
-          </div>
-          {this.state.authed && (
-            <div>
-              <Dropdown trigger="click" overlay={this.userMenu}>
-                <Button icon={<UserOutlined />} shape="circle" />
-              </Dropdown>
-            </div>
-          )}
-        </Header>
-        <Content
-          style={{ height: "calc(100% - 64px)", margin: 20, overflow: "auto" }}
-        >
-          {this.renderContent()}
-        </Content>
-      </Layout>
-    );
-  }
 }
 
 export default App;
