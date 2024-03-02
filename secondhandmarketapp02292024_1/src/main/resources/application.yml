@@ -1,0 +1,35 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB # File upload limit, default 1MB not enough.
+  jackson:
+    default-property-inclusion: non_null
+  datasource:
+    url: jdbc:postgresql://${DATABASE_URL:localhost}:${DATABASE_PORT:5439}/postgres # Default PostgreSQL port is 5432
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:Gongql1216}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect # Use standard PostgreSQLDialect
+    show-sql: true
+  sql:
+    init:
+      mode: never # Change from always to never if you don't want to initialize from a script
+      # Remove or comment out schema-locations if not used
+
+  logging:
+    level:
+      root: DEBUG
+      com.laioffer.secondhandmarketapp02292024_1: DEBUG
+
+secondhandmarketapp02292024_1:
+  gcs:
+    bucket: secondHandMarketAppBackendNew-bucket
+  geocoding:
+    key: AIzaSyBMwCzj-6wTOD-nVs6Q1KM_au56KRo60nk
+  jwt:
+    secret-key: hYW3L6I3gPpEUbtU+17FEHRYJuc8uLYHaLLsuzzyKn4=
