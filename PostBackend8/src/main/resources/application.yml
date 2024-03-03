@@ -1,0 +1,19 @@
+logging:
+  level:
+    org.apache.coyote.http11.Http11InputBuffer: DEBUG # Incoming HTTP Requests
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5436/postgres # Update with your database URL
+    username: postgres # Update with your database username
+    password: 123456 # Update with your database password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update # Or use 'validate' for production to validate the schema without making changes
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect # Adjust if using a different database
+    show-sql: true
+  jackson:
+    default-property-inclusion: non-null # if the field is null, do not show
